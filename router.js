@@ -17,7 +17,12 @@ router.post("/movies", (req, res, next) => {
 router.get("/movies", (req, res, next) => {
   const limit = req.query.limit || 25;
   const offset = req.query.offset || 0;
-  Movie.findAndCountAll({ attributes: ["title"], raw: true, limit, offset })
+  Movie.findAndCountAll({
+    attributes: ["title", "yearOfRelease", "synopsis"],
+    raw: true,
+    limit,
+    offset
+  })
     .then(movieList =>
       res.send(res.json({ movies: movieList, total: movieList.count }))
     )
