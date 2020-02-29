@@ -3,6 +3,7 @@ const { Router } = require("express");
 
 const router = new Router();
 
+//LOG A NEW MOVIE
 router.post("/movies", (req, res, next) => {
   //console.log("sample data", req.body);
   Movie.create(req.body)
@@ -12,14 +13,18 @@ router.post("/movies", (req, res, next) => {
     .catch(next);
 });
 
+//COUNT AND RENDER THE TOTAL LIST WITH LIMIT AND OFFSET DECIDED BY THE USER
 router.get("/movies", (req, res, next) => {
-  Movie.findAll({ attributes: ["title"], raw: true })
-    .then(movies => {
-      res.json(movies);
-    })
+  const limit = req.query.limit || 25;
+  const offset = req.query.offset || 0;
+  Movie.findAndCountAll({ attributes: ["title"], raw: true, limit, offset })
+    .then(movieList =>
+      res.send(res.json({ movies: movieList, total: movieList.count }))
+    )
     .catch(next);
 });
 
+//FIND A SINGLE MOVIE
 router.get("/movies/:id", (req, res, next) => {
   Movie.findByPk(req.params.id)
     .then(movie => {
@@ -28,6 +33,7 @@ router.get("/movies/:id", (req, res, next) => {
     .catch(next);
 });
 
+//UPDATE A SINGLE MOVIE
 router.put("/movies/:id", (req, res) => {
   Movie.findByPk(req.params.id).then(movie =>
     movie
@@ -36,6 +42,7 @@ router.put("/movies/:id", (req, res) => {
   );
 });
 
+//DELETE A SINGLE MOVIE
 router.delete("/movies/:id", (req, res) => {
   Movie.destroy({
     where: {
