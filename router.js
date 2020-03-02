@@ -56,7 +56,7 @@ router.delete("/movies/:id", (req, res) => {
   }).then(teamDeleted => {
     teamDeleted === 1
       ? res.status(200).send("Movie Deleted")
-      : res.status(404).send("sorry Movie not found");
+      : res.status(404).send("Sorry Movie Not Found");
   });
 });
 
